@@ -1,0 +1,25 @@
+{
+  "name": "babuxa10",
+  "version": "1.0.0",
+  "description": "Microservice to get pantone color by AI",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon run server.js"
+  },
+  "author": "Hugo Suárez",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "2.8.5",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "morgan": "1.10.0",
+    "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0",
+    "nodemon": "^2.0.22",
+    "prettier": "2.8.8"
+  }
+}
