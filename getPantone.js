@@ -1,78 +1,46 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { generateError } from "./generateError.js";
 
-// import { Configuration, OpenAIApi } from "openai";
-// import { text, saludo } from "./prompt.js";
-// const { OPENAI_API_KEY } = process.env;
-// const configuration = new Configuration({
-//   apiKey: OPENAI_API_KEY,
-// });
-
-// const openai = new OpenAIApi(configuration);
-// export const getPantone = async (req, res, next) => {
-//   const shape = {
-//     attributes: ["data"],
-//   };
-//   try {
-//     const response = await openai.createCompletion({
-//       model: "text-davinci-003",
-//       prompt: `${text}. Return the response as a JSON object with a shape of ${JSON.stringify(shape)}.`,
-//       temperature: 1.2,
-
-//       max_tokens: 2000,
-//       presence_penalty: 1,
-//       frequency_penalty: 1,
-//     });
-
-//     res.send({
-//       status: "ok",
-//       data: JSON.parse(response.data.choices[0].message.content)
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+//* CONFIGURAION AI
 
 import { Configuration, OpenAIApi } from "openai";
 const configuration = new Configuration({
-  // organization: process.env.OPENAI_ORGANIZATION,
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
-export async function handler(req, res) {
+//* CREATE FUNCTION
+
+export const getPantone = async (req, res, next) => {
   const prompt =
-    "Generate a list of three made-up book titles along with their authors and genres. Provide them in JSON format with the following keys: book_id, title, author, genre.";
+  "Genera un pantone de colores, a partir del color principal #baba13.Dicho pantone será usado para una página web sobre arte floral, que comercializa sus productos. El pantone debe transmitir las siguientes sensaciones:inegridad,estabilidad,confianza,energía,felicidad,brillo,creatividad,amistad,lujo,nobleza,magia,sabiduria,armonñia,vida,fiabilidad,salud,sofisticacion,Los colores irán relacionados con cada uno de los siguientes elementos de la página web:1.Texto principal 2.Texto secundario 3.marcos,lineas,bordes 4.fondos de texto eimagen 5.botones. 6.color iconos.Se incluirá una muestra de cada color seleccionado.la respuesta será un archivo JSOn con la siguiente,en donde cada color contará con las sigguientes propiedades:hexColor,name,application,muestraWeb";
 
-  const shape = {
-    attributes: ["data"],
-  };
+// FETCH API
 
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "user",
-        content: `${prompt}. Return the response as a JSON object with a shape of ${JSON.stringify(
-          shape
-        )}.`,
-      },
-    ],
-    temperature: 1.2,
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: `${prompt}.`,
+        },
+      ],
+      temperature: 1.2,
 
-    max_tokens: 2000,
-    presence_penalty: 1,
-    // frequency_penalty: 1,
-  });
-  const dataResponse = JSON.parse(completion.data.choices[0].message.content);
-  res.send({
-    status: "ok",
-    data: dataResponse.attributes,
-  });
+      max_tokens: 2000,
+      presence_penalty: 1,
+    });
 
-  // const data = JSON.parse(completion.data.choices[0].message.content)
+// GENERATE AND SEND DATA
 
-  // res.status(200).json({
-  //   data
-  // })
-}
+    const dataResponse = JSON.parse(completion.data.choices[0].message.content);
+    res.send({
+      status: "ok",
+      data: dataResponse,
+    });
+  } catch (error) {
+    next(generateError(error.message, error.httpStatus));
+  }
+};
